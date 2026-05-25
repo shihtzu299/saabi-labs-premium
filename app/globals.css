@@ -208,6 +208,16 @@ body {
   isolation: isolate;
 }
 
+.hero-visual-shell {
+  background: rgba(2, 6, 23, 0.22);
+  contain: layout paint;
+}
+
+.hero-visual-shell > img {
+  display: block;
+  background: rgba(2, 6, 23, 0.56);
+}
+
 .hero-grid {
   position: absolute;
   inset: 0;
@@ -557,6 +567,7 @@ body {
   top: 8%;
   width: min(390px, 72%);
   padding: 22px;
+  z-index: 2;
 }
 
 .command-panel-status {
@@ -564,6 +575,7 @@ body {
   top: 15%;
   width: 230px;
   padding: 18px;
+  z-index: 4;
 }
 
 .command-panel-code {
@@ -571,6 +583,7 @@ body {
   bottom: 9%;
   width: 260px;
   padding: 18px;
+  z-index: 3;
 }
 
 .command-topbar {
@@ -770,26 +783,20 @@ body {
   }
 }
 
-@media (max-width: 1024px) {
-  .hero-system-visual {
-    min-height: 500px;
-    aspect-ratio: 1.25;
-  }
-
-  .command-panel-main {
-    width: min(380px, 68%);
-  }
-
-  .command-panel-status {
-    width: 214px;
-  }
-}
-
 @media (max-width: 768px) {
   .hero-system-visual {
-    min-height: 520px;
+    min-height: 440px;
     aspect-ratio: auto;
     border-radius: 28px;
+  }
+
+  .hero-scanline,
+  .data-node {
+    display: none;
+  }
+
+  .hero-system-visual::before {
+    opacity: 0.55;
   }
 
   .hero-orbit-three,
@@ -810,56 +817,109 @@ body {
     top: 54%;
   }
 
+  .command-panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow:
+      0 16px 42px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
   .command-panel-main {
     left: 18px;
     right: 18px;
     top: 18px;
     width: auto;
     padding: 18px;
+    max-height: 360px;
+    overflow: hidden;
   }
 
   .command-panel-status {
-    left: 18px;
-    right: 18px;
-    top: auto;
-    bottom: 18px;
-    width: auto;
+    left: auto;
+    right: 8px;
+    top: 232px;
+    bottom: auto;
+    width: min(255px, calc(100% - 52px));
+    padding: 14px;
+    background: rgba(3, 8, 23, 0.88);
+    border-color: rgba(125, 211, 252, 0.24);
+  }
+
+  .core-module {
+    padding: 14px;
   }
 
   .core-module h3 {
-    font-size: 19px;
+    font-size: 18px;
+  }
+
+  .system-bars {
+    gap: 8px;
+    margin: 14px 0;
   }
 
   .module-tile {
-    min-height: 66px;
-    padding: 12px;
+    min-height: 62px;
+    padding: 11px;
+  }
+
+  .module-tile:nth-child(3),
+  .module-tile:nth-child(4) {
+    opacity: 0.58;
   }
 
   .module-tile strong {
-    font-size: 21px;
+    margin-top: 8px;
+    font-size: 20px;
   }
 
   .status-stack {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .panel-label {
+    margin-bottom: 10px;
   }
 
   .status-row {
     grid-template-columns: auto 1fr;
+    gap: 7px;
+    padding: 8px;
   }
 
   .status-row strong {
     grid-column: 2;
   }
+
+  .hero-scanline,
+  .data-node,
+  .status-pulse {
+    animation: none;
+  }
 }
 
 @media (max-width: 420px) {
   .hero-system-visual {
-    min-height: 570px;
+    min-height: 440px;
   }
 
-  .module-grid,
-  .status-stack {
+  .module-grid {
     grid-template-columns: 1fr;
+  }
+
+  .module-tile {
+    min-height: 54px;
+  }
+
+  .module-tile:nth-child(4) {
+    display: none;
+  }
+
+  .command-panel-status {
+    top: 246px;
+    width: min(248px, calc(100% - 44px));
   }
 
   .hero-core-ring,
@@ -876,7 +936,6 @@ body {
 
 .testimonials-scroll {
   -ms-overflow-style: none;
-  scrollbar-width: none;
 }
 
 .testimonials-scroll::-webkit-scrollbar {

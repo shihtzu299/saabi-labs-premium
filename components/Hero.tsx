@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { homeContent } from "@/data/home";
 
 const statusItems = [
@@ -18,6 +19,20 @@ const systemModules = [
 ];
 
 export default function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+  const [isCompactScreen, setIsCompactScreen] = useState(false);
+  const shouldSimplifyHero = prefersReducedMotion || isCompactScreen;
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 768px)");
+    const updateScreenSize = () => setIsCompactScreen(query.matches);
+
+    updateScreenSize();
+    query.addEventListener("change", updateScreenSize);
+
+    return () => query.removeEventListener("change", updateScreenSize);
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center grid-bg overflow-hidden">
       <div className="glow top-0 left-0"></div>
@@ -78,13 +93,13 @@ export default function Hero() {
             initial={{ opacity: 0, rotateX: 18, rotateY: -18 }}
             animate={{ opacity: 1, rotateX: 0, rotateY: 0 }}
             transition={{ delay: 0.2, duration: 0.9 }}
-            className="min-h-[360px] overflow-hidden rounded-[32px]"
+            className="hero-visual-shell min-h-[360px] overflow-hidden rounded-[32px]"
           >
             {homeContent.heroImageUrl ? (
               <img
                 src={homeContent.heroImageUrl}
                 alt="Saabi Labs premium product showcase"
-                className="h-full min-h-[360px] w-full object-cover"
+                className="h-[360px] w-full object-contain sm:h-[420px] lg:h-[560px]"
               />
             ) : (
               <div className="hero-visual hero-system-visual">
@@ -97,8 +112,12 @@ export default function Hero() {
                 <div className="hero-orbit hero-orbit-three"></div>
 
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 34, repeat: Infinity, ease: "linear" }}
+                  animate={shouldSimplifyHero ? { rotate: 0 } : { rotate: 360 }}
+                  transition={
+                    shouldSimplifyHero
+                      ? { duration: 0 }
+                      : { duration: 34, repeat: Infinity, ease: "linear" }
+                  }
                   className="hero-core-ring"
                 >
                   <span></span>
@@ -107,8 +126,12 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 5.6, repeat: Infinity, ease: "easeInOut" }}
+                  animate={shouldSimplifyHero ? { y: 0 } : { y: [0, -10, 0] }}
+                  transition={
+                    shouldSimplifyHero
+                      ? { duration: 0 }
+                      : { duration: 5.6, repeat: Infinity, ease: "easeInOut" }
+                  }
                   className="command-panel command-panel-main"
                 >
                   <div className="command-topbar">
@@ -145,8 +168,14 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.div
-                  animate={{ x: [0, 8, 0], y: [0, 12, 0] }}
-                  transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut" }}
+                  animate={
+                    shouldSimplifyHero ? { x: 0, y: 0 } : { x: [0, 8, 0], y: [0, 12, 0] }
+                  }
+                  transition={
+                    shouldSimplifyHero
+                      ? { duration: 0 }
+                      : { duration: 6.5, repeat: Infinity, ease: "easeInOut" }
+                  }
                   className="command-panel command-panel-status"
                 >
                   <div className="panel-label">Launch Monitor</div>
@@ -162,8 +191,12 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.div
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+                  animate={shouldSimplifyHero ? { y: 0 } : { y: [0, -8, 0] }}
+                  transition={
+                    shouldSimplifyHero
+                      ? { duration: 0 }
+                      : { duration: 4.8, repeat: Infinity, ease: "easeInOut" }
+                  }
                   className="command-panel command-panel-code"
                 >
                   <div className="panel-label">Agent Trace</div>

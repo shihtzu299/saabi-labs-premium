@@ -67,10 +67,10 @@ export default function Contact() {
 
             <div className="glass p-8 rounded-3xl">
               <div className="mb-4 flex items-center justify-between gap-6">
-                <h3 className="text-2xl font-bold">Office</h3>
+                <h3 className="text-2xl font-bold">Location</h3>
                 <Building2 className="text-blue-300" size={34} />
               </div>
-              <p className="text-gray-400">Abuja, Nigeria</p>
+              <p className="text-gray-400">Abuja FCT, Nigeria.</p>
               <div className="mt-2 flex items-center gap-2 text-gray-400">
                 <Mail size={16} />
                 <span>shihtzu299@gmail.com</span>
