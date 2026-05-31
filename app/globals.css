@@ -391,18 +391,38 @@ body {
 }
 
 @media (max-width: 1024px) {
-  .floating-card-main {
+  .command-panel-main {
     left: 24px;
     top: 24px;
+    width: calc(100% - 300px);
+    max-width: 420px;
   }
 
-  .panel-right {
+  .command-panel-status {
+    top: 24px;
     right: 24px;
+    width: 210px;
+    padding: 16px;
   }
 
-  .panel-bottom {
+  .command-panel-code {
+    top: 330px;
     right: 24px;
-    bottom: 24px;
+    bottom: auto;
+    width: 210px;
+    padding: 14px;
+  }
+
+  .code-lines {
+    gap: 6px;
+  }
+
+  .code-lines span {
+    height: 6px;
+  }
+
+  .hero-system-visual {
+    min-height: 500px;
   }
 }
 
@@ -425,9 +445,21 @@ body {
   min-height: 560px;
   aspect-ratio: 0.96;
   background:
-    radial-gradient(circle at 48% 44%, rgba(34, 211, 238, 0.16), transparent 18%),
-    radial-gradient(circle at 74% 16%, rgba(96, 165, 250, 0.2), transparent 22%),
-    radial-gradient(circle at 16% 78%, rgba(16, 185, 129, 0.11), transparent 26%),
+    radial-gradient(
+      circle at 48% 44%,
+      rgba(34, 211, 238, 0.16),
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 74% 16%,
+      rgba(96, 165, 250, 0.2),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 16% 78%,
+      rgba(16, 185, 129, 0.11),
+      transparent 26%
+    ),
     linear-gradient(145deg, rgba(2, 6, 23, 0.92), rgba(10, 18, 38, 0.72));
   box-shadow:
     0 30px 110px rgba(0, 0, 0, 0.34),
@@ -439,9 +471,21 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(115deg, transparent 0 42%, rgba(125, 211, 252, 0.08) 48%, transparent 54%),
-    radial-gradient(circle at center, transparent 0 48%, rgba(255, 255, 255, 0.05) 49%, transparent 50%);
-  background-size: 100% 100%, 46px 46px;
+    linear-gradient(
+      115deg,
+      transparent 0 42%,
+      rgba(125, 211, 252, 0.08) 48%,
+      transparent 54%
+    ),
+    radial-gradient(
+      circle at center,
+      transparent 0 48%,
+      rgba(255, 255, 255, 0.05) 49%,
+      transparent 50%
+    );
+  background-size:
+    100% 100%,
+    46px 46px;
   opacity: 0.9;
 }
 
@@ -450,7 +494,12 @@ body {
   position: absolute;
   inset: auto 12% 9% 12%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(125, 211, 252, 0.5), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(125, 211, 252, 0.5),
+    transparent
+  );
   box-shadow: 0 0 32px rgba(125, 211, 252, 0.35);
 }
 
@@ -563,26 +612,30 @@ body {
 }
 
 .command-panel-main {
-  left: 7%;
+  left: 12%;
   top: 8%;
-  width: min(390px, 72%);
+  width: clamp(310px, 62%, 390px);
   padding: 22px;
   z-index: 2;
 }
 
 .command-panel-status {
-  right: 6%;
-  top: 15%;
-  width: 230px;
+  right: clamp(18px, 4%, 32px);
+  top: clamp(72px, 14%, 96px);
+  width: clamp(190px, 28%, 210px);
   padding: 18px;
+  background: rgba(3, 8, 23, 0.58);
+  border-color: rgba(125, 211, 252, 0.24);
   z-index: 4;
 }
 
 .command-panel-code {
-  right: 9%;
-  bottom: 9%;
-  width: 260px;
+  right: clamp(18px, 5%, 38px);
+  bottom: clamp(38px, 28%, 64px);
+  width: clamp(205px, 30%, 230px);
   padding: 18px;
+  background: rgba(3, 8, 23, 0.54);
+  border-color: rgba(148, 163, 184, 0.2);
   z-index: 3;
 }
 
@@ -648,17 +701,29 @@ body {
   display: block;
   height: 9px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(96, 165, 250, 0.82), rgba(45, 212, 191, 0.18));
+  background: linear-gradient(
+    90deg,
+    rgba(96, 165, 250, 0.82),
+    rgba(45, 212, 191, 0.18)
+  );
 }
 
 .system-bars span:nth-child(2) {
   width: 78%;
-  background: linear-gradient(90deg, rgba(45, 212, 191, 0.74), rgba(96, 165, 250, 0.12));
+  background: linear-gradient(
+    90deg,
+    rgba(45, 212, 191, 0.74),
+    rgba(96, 165, 250, 0.12)
+  );
 }
 
 .system-bars span:nth-child(3) {
   width: 58%;
-  background: linear-gradient(90deg, rgba(167, 139, 250, 0.68), rgba(96, 165, 250, 0.12));
+  background: linear-gradient(
+    90deg,
+    rgba(167, 139, 250, 0.68),
+    rgba(96, 165, 250, 0.12)
+  );
 }
 
 .module-grid {
@@ -699,7 +764,7 @@ body {
   align-items: center;
   gap: 9px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.05);
   padding: 10px;
 }
 
@@ -726,7 +791,11 @@ body {
   display: block;
   height: 10px;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(125, 211, 252, 0.6), rgba(148, 163, 184, 0.08));
+  background: linear-gradient(
+    90deg,
+    rgba(125, 211, 252, 0.6),
+    rgba(148, 163, 184, 0.08)
+  );
 }
 
 .data-node {
@@ -799,51 +868,39 @@ body {
     opacity: 0.55;
   }
 
-  .hero-orbit-three,
-  .command-panel-code {
-    display: none;
-  }
-
-  .hero-core-ring {
-    width: 124px;
-    height: 124px;
-    left: 73%;
-    top: 54%;
-  }
-
-  .hero-core-glow,
-  .hero-orbit {
-    left: 73%;
-    top: 54%;
-  }
-
   .command-panel {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     box-shadow:
-      0 16px 42px rgba(0, 0, 0, 0.28),
+      0 16px 20px rgba(0, 0, 0, 0.28),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .command-panel-main {
     left: 18px;
-    right: 18px;
     top: 18px;
-    width: auto;
+    width: calc(100% - 300px);
+    max-width: none;
     padding: 18px;
-    max-height: 360px;
-    overflow: hidden;
+    max-height: none;
+    overflow: visible;
   }
 
   .command-panel-status {
-    left: auto;
-    right: 8px;
-    top: 232px;
-    bottom: auto;
-    width: min(255px, calc(100% - 52px));
+    right: 18px;
+    top: 18px;
+    width: 240px;
     padding: 14px;
-    background: rgba(3, 8, 23, 0.88);
+    background: rgba(3, 8, 23, 0.72);
     border-color: rgba(125, 211, 252, 0.24);
+  }
+
+  .command-panel-code {
+    top: 200px;
+    right: 150px;
+    bottom: auto;
+    width: 210px;
+    padding: 14px;
   }
 
   .core-module {
@@ -902,7 +959,7 @@ body {
 
 @media (max-width: 420px) {
   .hero-system-visual {
-    min-height: 440px;
+    min-height: 620px;
   }
 
   .module-grid {
@@ -917,9 +974,27 @@ body {
     display: none;
   }
 
+  .command-panel-main {
+  left: 18px;
+  right: 18px;
+  width: auto;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+ }
+
   .command-panel-status {
-    top: 246px;
-    width: min(248px, calc(100% - 44px));
+    top: 200px;
+    right: 0px;
+    width: min(238px, calc(100% - 64px));
+  }
+
+  .command-panel-code {
+    top: 400px;
+    right: 10px;
+    bottom: auto;
+    width: 210px;
+    padding: 14px;
   }
 
   .hero-core-ring,

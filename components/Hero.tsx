@@ -24,7 +24,7 @@ export default function Hero() {
   const shouldSimplifyHero = prefersReducedMotion || isCompactScreen;
 
   useEffect(() => {
-    const query = window.matchMedia("(max-width: 768px)");
+    const query = window.matchMedia("(max-width: 600px)");
     const updateScreenSize = () => setIsCompactScreen(query.matches);
 
     updateScreenSize();
@@ -38,7 +38,7 @@ export default function Hero() {
       <div className="glow top-0 left-0"></div>
 
       <div className="max-w-7xl mx-auto px-6 w-full pt-28">
-        <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+        <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:items-center">
           <div>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -52,7 +52,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-5xl md:text-8xl font-black leading-[1]"
+              className="text-4xl md:text-7xl font-black leading-[1]"
             >
               Building
               <span className="gradient-text"> modern </span>
@@ -126,7 +126,13 @@ export default function Hero() {
                 </motion.div>
 
                 <motion.div
-                  animate={shouldSimplifyHero ? { y: 0 } : { y: [0, -10, 0] }}
+                  animate={
+                    isCompactScreen
+                      ? { y: 0 }
+                      : shouldSimplifyHero
+                        ? { y: 0 }
+                        : { y: [0, -10, 0] }
+                  }
                   transition={
                     shouldSimplifyHero
                       ? { duration: 0 }
@@ -169,7 +175,9 @@ export default function Hero() {
 
                 <motion.div
                   animate={
-                    shouldSimplifyHero ? { x: 0, y: 0 } : { x: [0, 8, 0], y: [0, 12, 0] }
+                    shouldSimplifyHero
+                      ? { x: 0, y: 0 }
+                      : { x: [0, 8, 0], y: [0, 12, 0] }
                   }
                   transition={
                     shouldSimplifyHero
