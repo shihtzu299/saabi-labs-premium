@@ -1,13 +1,15 @@
 import { NextResponse } from "next/server";
 import { fallbackConsultationReply } from "@/lib/chatFallback";
+import { readBoundedJson } from "@/lib/boundedRequest";
+import { allowRequest, requestClientKey } from "@/lib/rateLimit";
 
 type ChatMessage = {
   role: "user" | "assistant";
   content: string;
 };
 
-const systemPrompt = `You are Saabi Assist, the helpful website assistant for Saabi Labs.
-Saabi Labs is a premium engineering studio based in Abuja, Nigeria. It builds websites, SaaS apps, AI integrations, smart contracts, Web3 products, Telegram bots, automation tools, landing pages, and mobile apps.
+const systemPrompt = `You are Domani Assist, the helpful website assistant for Domani Consult.
+Domani Consult is a technology and digital solutions company serving businesses in Nigeria and internationally. Its primary services are website development; full-stack applications and SaaS; AI integrations and automation; and Web3 development and smart contracts. Other available capabilities include Telegram bots, landing pages, and mobile applications.
 Answer general questions in 1-2 short sentences.
 For questions about pricing, quotes, exact budgets, exact timelines, deadlines, availability, contracts, payment terms, guarantees, refunds, legal terms, or detailed technical commitments, do not guess. Briefly tell the visitor to use the contact page to schedule a consultation with a project manager on WhatsApp, Telegram, or X.
 Always stay concise, warm, and commercially useful.`;
@@ -68,20 +70,23 @@ function needsConsultation(message: string) {
 }
 
 export async function POST(request: Request) {
-  const token = process.env.HF_TOKEN;
-  const model = process.env.HF_MODEL || "CohereLabs/c4ai-command-r7b-12-2024:cohere";
-
-  if (!token) {
-    return NextResponse.json({ reply: fallbackConsultationReply, fallback: true });
+  if (!allowRequest(requestClientKey(request, "chat"), 30, 60 * 1000)) {
+    return NextResponse.json({ error: "Too many requests. Try again shortly." }, { status: 429 });
   }
-
   try {
-    const body = await request.json();
+    const parsed = await readBoundedJson(request, 32 * 1024);
+    if (parsed.tooLarge) return NextResponse.json({ error: "Request too large." }, { status: 413 });
+    if (!parsed.value || typeof parsed.value !== "object") return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
+    const body = parsed.value as { messages?: unknown };
     const messages = sanitizeMessages(body.messages);
 
     if (messages.length === 0) {
       return NextResponse.json({ error: "Message is required." }, { status: 400 });
     }
+
+    const token = process.env.HF_TOKEN;
+    const model = process.env.HF_MODEL || "CohereLabs/c4ai-command-r7b-12-2024:cohere";
+    if (!token) return NextResponse.json({ reply: fallbackConsultationReply, fallback: true });
 
     const latestUserMessage = [...messages].reverse().find((message) => message.role === "user");
 

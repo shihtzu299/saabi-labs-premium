@@ -1,227 +1,46 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 import { homeContent } from "@/data/home";
 
-const statusItems = [
-  ["AI Agent", "online"],
-  ["Contract", "ready"],
-  ["API", "stable"],
-  ["Deploy", "passed"],
-];
-
-const systemModules = [
-  ["Product UX", "98"],
-  ["Automation", "24"],
-  ["Web3", "07"],
-  ["AI Systems", "12"],
-];
+const trustNotes = ["Websites & applications", "SaaS platforms", "Intelligent automation"];
 
 export default function Hero() {
-  const prefersReducedMotion = useReducedMotion();
-  const [isCompactScreen, setIsCompactScreen] = useState(false);
-  const shouldSimplifyHero = prefersReducedMotion || isCompactScreen;
-
-  useEffect(() => {
-    const query = window.matchMedia("(max-width: 600px)");
-    const updateScreenSize = () => setIsCompactScreen(query.matches);
-
-    updateScreenSize();
-    query.addEventListener("change", updateScreenSize);
-
-    return () => query.removeEventListener("change", updateScreenSize);
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex items-center grid-bg overflow-hidden">
-      <div className="glow top-0 left-0"></div>
-
-      <div className="max-w-7xl mx-auto px-6 w-full pt-28">
-        <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:items-center">
-          <div>
-            <motion.p
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="uppercase tracking-[0.3em] text-blue-400 mb-6 mt-8"
-            >
-              Premium Engineering Studio
-            </motion.p>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl md:text-7xl font-black leading-[1]"
-            >
-              Building
-              <span className="gradient-text"> modern </span>
-              digital products for startups & Web3 ecosystems.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-gray-400 text-xl mt-8 max-w-3xl leading-8"
-            >
-              Saabi Labs engineers premium web applications, blockchain
-              infrastructure, smart contracts, AI systems, automation tools and
-              scalable startup products.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="flex gap-5 mt-10 flex-wrap"
-            >
-              <a
-                href="https://wa.me/2348140668254"
-                className="bg-blue-500 hover:scale-105 transition px-8 py-4 rounded-full"
-              >
-                Start a Project
-              </a>
-
-              <a href="#projects" className="glass px-8 py-4 rounded-full">
-                View Work
-              </a>
-            </motion.div>
+    <section className="domani-hero relative flex min-h-screen items-center overflow-hidden pt-24">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-6 pb-14 pt-10 sm:px-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-4 lg:pb-20 xl:px-12">
+        <div className="relative z-10 max-w-[600px]">
+          <h1 className="max-w-[650px] text-[clamp(2.8rem,5.2vw,5rem)] font-extrabold leading-[0.99] tracking-[-0.045em] text-white">
+            Building <span className="gradient-text">modern</span> digital products for businesses.
+          </h1>
+          <p className="mt-7 max-w-[560px] text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
+            Domani Consult designs and builds websites, full-stack applications, SaaS platforms and intelligent automation to help businesses grow and operate more efficiently.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+            <a href="https://wa.me/2348140668254" className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-blue-500 px-7 text-base font-semibold text-white shadow-[0_10px_40px_rgba(37,99,235,0.24)] transition hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-300">
+              Start a Project <ArrowRight size={19} aria-hidden="true" />
+            </a>
+            <a href="#projects" className="glass inline-flex min-h-14 items-center justify-center rounded-full px-7 text-base font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue-300">
+              View Our Work
+            </a>
           </div>
+          <ul className="mt-8 flex max-w-[540px] flex-wrap gap-2.5 text-xs text-slate-400 sm:text-sm" aria-label="Domani Consult services">
+            {trustNotes.map((note) => (
+              <li key={note} className="rounded-full border border-slate-400/20 bg-white/[0.02] px-3.5 py-1.5 leading-5">
+                {note}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-          <motion.div
-            initial={{ opacity: 0, rotateX: 18, rotateY: -18 }}
-            animate={{ opacity: 1, rotateX: 0, rotateY: 0 }}
-            transition={{ delay: 0.2, duration: 0.9 }}
-            className="hero-visual-shell min-h-[360px] overflow-hidden rounded-[32px]"
-          >
+        <div className="domani-devices relative mx-auto mt-2 min-h-[260px] w-full max-w-[720px] sm:min-h-[380px] lg:mt-4 lg:min-h-[560px]">
+          <div className="domani-device-float relative">
             {homeContent.heroImageUrl ? (
-              <img
-                src={homeContent.heroImageUrl}
-                alt="Saabi Labs premium product showcase"
-                className="h-[360px] w-full object-contain sm:h-[420px] lg:h-[560px]"
-              />
+              // Keep the existing CMS supplied hero image behavior available.
+              <img src={homeContent.heroImageUrl} alt="Domani Consult digital product showcase" className="domani-device-art" />
             ) : (
-              <div className="hero-visual hero-system-visual">
-                <div className="hero-grid"></div>
-                <div className="hero-scanline"></div>
-                <div className="hero-core-glow"></div>
-
-                <div className="hero-orbit hero-orbit-one"></div>
-                <div className="hero-orbit hero-orbit-two"></div>
-                <div className="hero-orbit hero-orbit-three"></div>
-
-                <motion.div
-                  animate={shouldSimplifyHero ? { rotate: 0 } : { rotate: 360 }}
-                  transition={
-                    shouldSimplifyHero
-                      ? { duration: 0 }
-                      : { duration: 34, repeat: Infinity, ease: "linear" }
-                  }
-                  className="hero-core-ring"
-                >
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </motion.div>
-
-                <motion.div
-                  animate={
-                    isCompactScreen
-                      ? { y: 0 }
-                      : shouldSimplifyHero
-                        ? { y: 0 }
-                        : { y: [0, -10, 0] }
-                  }
-                  transition={
-                    shouldSimplifyHero
-                      ? { duration: 0 }
-                      : { duration: 5.6, repeat: Infinity, ease: "easeInOut" }
-                  }
-                  className="command-panel command-panel-main"
-                >
-                  <div className="command-topbar">
-                    <div className="flex gap-2">
-                      <span className="dot blue"></span>
-                      <span className="dot purple"></span>
-                      <span className="dot cyan"></span>
-                    </div>
-                    <span>SAABI CORE</span>
-                  </div>
-
-                  <div className="core-module">
-                    <div>
-                      <p>System Engine</p>
-                      <h3>Premium Build Stack</h3>
-                    </div>
-                    <span>LIVE</span>
-                  </div>
-
-                  <div className="system-bars">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-
-                  <div className="module-grid">
-                    {systemModules.map(([label, value]) => (
-                      <div key={label} className="module-tile">
-                        <span>{label}</span>
-                        <strong>{value}</strong>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  animate={
-                    shouldSimplifyHero
-                      ? { x: 0, y: 0 }
-                      : { x: [0, 8, 0], y: [0, 12, 0] }
-                  }
-                  transition={
-                    shouldSimplifyHero
-                      ? { duration: 0 }
-                      : { duration: 6.5, repeat: Infinity, ease: "easeInOut" }
-                  }
-                  className="command-panel command-panel-status"
-                >
-                  <div className="panel-label">Launch Monitor</div>
-                  <div className="status-stack">
-                    {statusItems.map(([label, state]) => (
-                      <div key={label} className="status-row">
-                        <span className="status-pulse"></span>
-                        <span>{label}</span>
-                        <strong>{state}</strong>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  animate={shouldSimplifyHero ? { y: 0 } : { y: [0, -8, 0] }}
-                  transition={
-                    shouldSimplifyHero
-                      ? { duration: 0 }
-                      : { duration: 4.8, repeat: Infinity, ease: "easeInOut" }
-                  }
-                  className="command-panel command-panel-code"
-                >
-                  <div className="panel-label">Agent Trace</div>
-                  <div className="code-lines">
-                    <span className="w-[86%]"></span>
-                    <span className="w-[64%]"></span>
-                    <span className="w-[92%]"></span>
-                    <span className="w-[52%]"></span>
-                  </div>
-                </motion.div>
-
-                <div className="data-node node-one"></div>
-                <div className="data-node node-two"></div>
-                <div className="data-node node-three"></div>
-              </div>
+              <Image src="/images/domani-consult-hero-devices.webp" alt="Laptop and smartphone displaying Domani Consult analytics dashboards" fill priority sizes="(max-width: 768px) 100vw, 55vw" className="domani-device-art" />
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, CheckCircle2 } from "lucide-react";
-import { getProject, getProjects } from "@/lib/cms";
+import { getProject } from "@/lib/cms";
+import { socialImage } from "@/lib/site";
+
+export const dynamic = "force-dynamic";
 
 type ProjectPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  const projects = await getProjects();
-  return projects.map((project) => ({ slug: project.slug }));
-}
 
 export async function generateMetadata({ params }: ProjectPageProps) {
   const { slug } = await params;
@@ -27,7 +25,20 @@ export async function generateMetadata({ params }: ProjectPageProps) {
     description: project.summary,
     alternates: {
       canonical: `/projects/${project.slug}`
-    }
+    },
+    openGraph: {
+      title: project.title,
+      description: project.summary,
+      url: `/projects/${project.slug}`,
+      type: "website",
+      images: [socialImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: project.title,
+      description: project.summary,
+      images: [socialImage.url],
+    },
   };
 }
 

@@ -1,10 +1,25 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getPosts } from "@/lib/cms";
+import { socialImage } from "@/lib/site";
 
 export const metadata = {
   title: "Blog",
-  description: "Notes from Saabi Labs on product engineering, Web3 UX, AI systems, and startup execution."
+  description: "Notes from Domani Consult on product engineering, Web3 UX, AI systems, and startup execution.",
+  alternates: { canonical: "/blog" },
+  openGraph: {
+    title: "Blog | Domani Consult",
+    description: "Notes from Domani Consult on product engineering, Web3 UX, AI systems, and startup execution.",
+    url: "/blog",
+    type: "website" as const,
+    images: [socialImage],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Blog | Domani Consult",
+    description: "Notes from Domani Consult on product engineering, Web3 UX, AI systems, and startup execution.",
+    images: [socialImage.url],
+  },
 };
 
 export default async function BlogPage() {
@@ -13,7 +28,7 @@ export default async function BlogPage() {
   return (
     <main className="min-h-screen px-6 pb-24 pt-32">
       <div className="mx-auto max-w-6xl">
-        <p className="mb-5 uppercase tracking-[0.3em] text-blue-400">CMS Blog</p>
+        <p className="mb-5 uppercase tracking-[0.3em] text-blue-400">Blog</p>
         <h1 className="max-w-4xl text-5xl font-black leading-tight md:text-7xl">Field notes for ambitious product teams.</h1>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">

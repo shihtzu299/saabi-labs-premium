@@ -17,33 +17,33 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 border-b border-white/5 backdrop-blur-xl bg-black/20">
-      <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+    <nav className="domani-nav fixed top-0 left-0 w-full z-50 border-b border-white/5 backdrop-blur-xl bg-[#050b18]/80">
+      <div className="mx-auto flex max-w-[1440px] items-center justify-between px-6 py-3.5 sm:px-10 lg:px-12">
         <Link
   href="/"
   className="flex items-center gap-3"
 >
   <Image
     src="/logo.png"
-    alt="Saabi Labs logo"
-    width={44}
-    height={44}
+    alt="Domani Consult emblem"
+    width={48}
+    height={48}
     className="object-contain"
     priority
   />
 
   <div className="flex flex-col leading-none">
-    <span className="text-lg font-black">
-      Saabi Labs
+    <span className="text-lg font-bold tracking-tight sm:text-xl">
+      Domani Consult
     </span>
 
     <span className="mt-1 text-[10px] uppercase tracking-[0.28em] text-blue-300">
-      Premium Engineering
+      Technology &amp; Digital Solutions
     </span>
   </div>
 </Link>
 
-        <div className="hidden md:flex gap-8 text-sm text-gray-300">
+        <div className="hidden items-center gap-8 text-[15px] text-gray-300 md:flex">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>{link.label}</Link>
           ))}

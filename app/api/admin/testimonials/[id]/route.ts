@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { readBoundedJson } from "@/lib/boundedRequest";
 
 import {
   deleteTestimonial,
@@ -20,7 +21,10 @@ export async function PATCH(request: Request, { params }: RouteProps) {
 
   const { id } = await params;
 
-  const body = await request.json();
+  const parsed = await readBoundedJson(request, 16 * 1024);
+  if (parsed.tooLarge) return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  if (!parsed.value || typeof parsed.value !== "object") return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
+  const body = parsed.value;
 
   const updated = await updateTestimonial(id, body);
 

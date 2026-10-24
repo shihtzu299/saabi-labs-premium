@@ -101,8 +101,7 @@ on public.testimonials
 for select
 to anon, authenticated
 using (
-  approved = true
-  or status = 'approved'
+  approved = true and status = 'approved'
 );
 
 drop policy if exists "Anyone can submit testimonials" on public.testimonials;
@@ -111,7 +110,7 @@ create policy "Anyone can submit testimonials"
 on public.testimonials
 for insert
 to anon, authenticated
-with check (true);
+with check (status = 'pending' and approved = false);
 
 insert into storage.buckets (
   id,

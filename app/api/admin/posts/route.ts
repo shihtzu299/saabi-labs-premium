@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getPosts, isAdminRequest, upsertPost } from "@/lib/cms";
 import type { Post } from "@/data/posts";
+import { readBoundedJson } from "@/lib/boundedRequest";
 
-export async function GET() {
-  return NextResponse.json({ posts: await getPosts() });
+export async function GET(request: Request) {
+  if (!isAdminRequest(request)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  return NextResponse.json({ posts: await getPosts(true) });
 }
 
 export async function POST(request: Request) {
@@ -12,7 +14,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  const post = (await request.json()) as Post;
+  const parsed = await readBoundedJson(request, 128 * 1024);
+  if (parsed.tooLarge) return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  if (!parsed.value || typeof parsed.value !== "object") return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
+  const post = parsed.value as Post;
 
   if (!post.slug || !post.title || !post.excerpt) {
     return NextResponse.json({ error: "Slug, title, and excerpt are required." }, { status: 400 });

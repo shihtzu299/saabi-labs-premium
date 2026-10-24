@@ -2,7 +2,8 @@ import AdminLoginForm from "@/components/AdminLoginForm";
 
 export const metadata = {
   title: "Admin Login",
-  description: "Login to manage Saabi Labs CMS content."
+  description: "Login to manage Domani Consult CMS content.",
+  robots: { index: false, follow: false },
 };
 
 export default function AdminLoginPage() {

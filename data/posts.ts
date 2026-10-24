@@ -19,7 +19,7 @@ export const posts: Post[] = [
     content: [
       "Premium product work is not about adding ceremony. It is about choosing the few systems that keep quality high while the team is moving quickly.",
       "For early teams, the strongest pattern is a compact loop: define the user action, build the smallest complete flow, polish the moment of trust, then measure the next bottleneck.",
-      "Saabi Labs uses this approach across AI, Web3, and SaaS builds because it keeps the product useful before it becomes crowded."
+      "Domani Consult uses this approach across AI, Web3, and SaaS builds because it keeps the product useful before it becomes crowded."
     ]
   },
   {

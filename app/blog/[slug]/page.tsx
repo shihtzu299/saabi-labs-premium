@@ -1,18 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getPost, getPosts } from "@/lib/cms";
+import { getPost } from "@/lib/cms";
+import { socialImage } from "@/lib/site";
+
+export const dynamic = "force-dynamic";
 
 type BlogPostProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  const posts = await getPosts();
-  return posts.map((post) => ({ slug: post.slug }));
-}
 
 export async function generateMetadata({ params }: BlogPostProps) {
   const { slug } = await params;
@@ -27,7 +25,20 @@ export async function generateMetadata({ params }: BlogPostProps) {
     description: post.excerpt,
     alternates: {
       canonical: `/blog/${post.slug}`
-    }
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url: `/blog/${post.slug}`,
+      type: "article",
+      images: [socialImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [socialImage.url],
+    },
   };
 }
 

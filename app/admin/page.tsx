@@ -7,6 +7,11 @@ import { adminCookieName, verifyAdminToken } from "@/lib/adminAuth";
 
 import { getProjects, getPosts, getTestimonials } from "@/lib/cms";
 
+export const metadata = {
+  title: "CMS Dashboard",
+  robots: { index: false, follow: false },
+};
+
 export default async function AdminPage() {
   const cookieStore = await cookies();
 
@@ -17,9 +22,9 @@ export default async function AdminPage() {
   }
 
   const [projects, posts, testimonials] = await Promise.all([
-    getProjects(),
-    getPosts(),
-    getTestimonials(),
+    getProjects(true),
+    getPosts(true),
+    getTestimonials(undefined, true),
   ]);
 
   return (

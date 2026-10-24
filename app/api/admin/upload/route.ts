@@ -1,17 +1,15 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/cms";
+import { imageExtension, isValidImage, readBoundedBody } from "@/lib/boundedRequest";
 
 const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
-function slugifyFileName(name: string) {
-  const parts = name.split(".");
-  const extension = parts.length > 1 ? parts.pop()?.toLowerCase() : "webp";
-  const baseName = parts.join(".") || "image";
-
+function slugifyFileName(name: string, mimeType: string) {
+  const baseName = name.replace(/\.[^.]*$/, "") || "image";
   return `${baseName
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")}-${Date.now()}.${extension}`;
+    .replace(/^-|-$/g, "") || "image"}-${Date.now()}.${imageExtension(mimeType)}`;
 }
 
 export async function POST(request: Request) {
@@ -30,7 +28,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const formData = await request.formData();
+  const body = await readBoundedBody(request, 2 * 1024 * 1024 + 64 * 1024);
+  if (!body) return NextResponse.json({ error: "Upload is too large." }, { status: 413 });
+  let formData: FormData;
+  try {
+    formData = await new Request(request.url, { method: "POST", headers: request.headers, body }).formData();
+  } catch {
+    return NextResponse.json({ error: "Invalid upload form." }, { status: 400 });
+  }
   const file = formData.get("file");
   const folderValue = formData.get("folder");
   const folder = typeof folderValue === "string" ? folderValue : "uploads";
@@ -43,13 +48,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Upload a JPG, PNG, or WebP image." }, { status: 400 });
   }
 
-  if (file.size > 1024 * 1024 * 2) {
+  if (file.size === 0 || file.size > 1024 * 1024 * 2) {
     return NextResponse.json({ error: "Image must be 2MB or smaller." }, { status: 400 });
   }
 
-  const cleanFolder = folder.replace(/[^a-z0-9-/]/gi, "").replace(/^\/+|\/+$/g, "") || "uploads";
-  const objectPath = `${cleanFolder}/${slugifyFileName(file.name)}`;
-  const uploadUrl = `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/${bucket}/${objectPath}`;
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if (!isValidImage(bytes, file.type)) {
+    return NextResponse.json({ error: "Image content does not match its file type." }, { status: 400 });
+  }
+
+  const cleanFolder = folder.split("/").map((part) => part.replace(/[^a-z0-9_-]/gi, "")).filter((part) => part && part !== "." && part !== "..").join("/") || "uploads";
+  const objectPath = `${cleanFolder}/${slugifyFileName(file.name, file.type)}`;
+  const encodedPath = objectPath.split("/").map(encodeURIComponent).join("/");
+  const uploadUrl = `${supabaseUrl.replace(/\/$/, "")}/storage/v1/object/${encodeURIComponent(bucket)}/${encodedPath}`;
 
   const uploadResponse = await fetch(uploadUrl, {
     method: "POST",
@@ -59,14 +70,13 @@ export async function POST(request: Request) {
       "Content-Type": file.type,
       "x-upsert": "true"
     },
-    body: Buffer.from(await file.arrayBuffer())
+    body: Buffer.from(bytes)
   });
 
   if (!uploadResponse.ok) {
-    const error = await uploadResponse.text();
     return NextResponse.json(
-      { error: error || "Supabase image upload failed." },
-      { status: uploadResponse.status }
+      { error: "Supabase image upload failed." },
+      { status: 502 }
     );
   }
 

@@ -2,9 +2,11 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getProjects, isAdminRequest, upsertProject } from "@/lib/cms";
 import type { Project } from "@/data/projects";
+import { readBoundedJson } from "@/lib/boundedRequest";
 
-export async function GET() {
-  return NextResponse.json({ projects: await getProjects() });
+export async function GET(request: Request) {
+  if (!isAdminRequest(request)) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  return NextResponse.json({ projects: await getProjects(true) });
 }
 
 export async function POST(request: Request) {
@@ -12,7 +14,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
-  const project = (await request.json()) as Project;
+  const parsed = await readBoundedJson(request, 128 * 1024);
+  if (parsed.tooLarge) return NextResponse.json({ error: "Request too large." }, { status: 413 });
+  if (!parsed.value || typeof parsed.value !== "object") return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
+  const project = parsed.value as Project;
 
   if (!project.slug || !project.title || !project.summary) {
     return NextResponse.json({ error: "Slug, title, and summary are required." }, { status: 400 });

@@ -7,6 +7,7 @@ export type Testimonial = {
   avatarUrl: string;
   rating?: number;
   status?: "pending" | "approved";
+  approved?: boolean;
   created_at?: string;
 };
 

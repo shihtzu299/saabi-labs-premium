@@ -29,12 +29,12 @@ export default function Contact() {
     <section id="contact" className="py-32">
       <div className="max-w-7xl mx-auto px-6">
         <div className="glass rounded-[32px] p-12">
-          <h2 className="text-5xl font-black mb-10">Let&apos;s build something exceptional.</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black leading-tight tracking-tight mb-10 break-words">Let&apos;s build something exceptional.</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             <a
               href="https://wa.me/2348140668254"
-              aria-label="Contact Saabi Labs on WhatsApp"
+              aria-label="Contact Domani Consult on WhatsApp"
               className="glass flex items-center justify-between gap-6 p-8 rounded-3xl transition hover:border-blue-400/40"
             >
               <h3 className="text-2xl font-bold">WhatsApp</h3>
@@ -45,7 +45,7 @@ export default function Contact() {
 
             <a
               href="https://t.me/bnbjing"
-              aria-label="Contact Saabi Labs on Telegram"
+              aria-label="Contact Domani Consult on Telegram"
               className="glass flex items-center justify-between gap-6 p-8 rounded-3xl transition hover:border-blue-400/40"
             >
               <h3 className="text-2xl font-bold">Telegram</h3>
@@ -56,7 +56,7 @@ export default function Contact() {
 
             <a
               href="https://x.com/ares19bc_"
-              aria-label="Visit Saabi Labs on X"
+              aria-label="Visit Domani Consult on X"
               className="glass flex items-center justify-between gap-6 p-8 rounded-3xl transition hover:border-blue-400/40"
             >
               <h3 className="text-2xl font-bold">X</h3>

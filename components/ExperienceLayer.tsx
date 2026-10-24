@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Bot, MessageCircle, Moon, Send, Sun, X } from "lucide-react";
 import gsap from "gsap";
 import { fallbackConsultationReply, getWelcomeReply } from "@/lib/chatFallback";
@@ -27,17 +28,22 @@ function Loader() {
 }
 
 function MotionSystem() {
+  const pathname = usePathname();
+
   useEffect(() => {
+    const container = document.querySelector("main");
+    if (!container || !container.querySelector(".gsap-reveal")) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".gsap-reveal",
         { autoAlpha: 0, y: 44 },
         { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.08 }
       );
-    });
+    }, container);
 
     return () => ctx.revert();
-  }, []);
+  }, [pathname]);
 
   return null;
 }
@@ -58,8 +64,8 @@ function CustomCursor() {
 
   return (
     <>
-      <div ref={ringRef} className="pointer-events-none fixed left-0 top-0 z-[90] hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-200/40 md:block" />
-      <div ref={dotRef} className="pointer-events-none fixed left-0 top-0 z-[91] hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-200 md:block" />
+      <div ref={ringRef} className="custom-cursor-ring pointer-events-none fixed left-0 top-0 z-[90] hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-blue-200/40 md:block" />
+      <div ref={dotRef} className="custom-cursor-dot pointer-events-none fixed left-0 top-0 z-[91] hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-200 md:block" />
     </>
   );
 }
@@ -188,7 +194,7 @@ function Chatbot() {
           <div className="flex items-center justify-between border-b border-white/10 p-4">
             <div className="flex items-center gap-2 font-semibold">
               <Bot size={18} />
-              Saabi Assist
+              Domani Assist
             </div>
             <button aria-label="Close chat" onClick={() => setOpen(false)}>
               <X size={18} />
@@ -207,6 +213,7 @@ function Chatbot() {
           </div>
           <div className="flex gap-2 border-t border-white/10 p-3">
             <input
+              aria-label="Ask Domani Assist a question"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               onKeyDown={(event) => event.key === "Enter" && !loading && sendMessage()}

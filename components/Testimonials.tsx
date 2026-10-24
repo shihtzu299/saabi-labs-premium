@@ -145,7 +145,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
     }
 
     if (form.message.trim().length < 20) {
-      nextErrors.message = "Share at least 20 characters.";
+      nextErrors.message = "Your testimonial must be at least 20 characters long.";
     }
 
     if (form.rating < 1 || form.rating > 5) {
@@ -433,6 +433,9 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                 <label className="grid gap-2">
                   <span className="text-sm font-semibold text-gray-300">Message</span>
                   <textarea
+                    id="testimonial-message"
+                    aria-invalid={Boolean(errors.message)}
+                    aria-describedby={`testimonial-message-help${errors.message ? " testimonial-message-error" : ""}`}
                     className="min-h-32 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 outline-none transition focus:border-blue-300/60"
                     value={form.message}
                     disabled={isSubmitting}
@@ -443,8 +446,11 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                       }))
                     }
                   />
+                  <span id="testimonial-message-help" className="text-sm text-gray-400">
+                    Please write at least 20 characters.
+                  </span>
                   {errors.message ? (
-                    <span className="text-sm text-red-300">{errors.message}</span>
+                    <span id="testimonial-message-error" role="alert" className="text-sm text-red-300">{errors.message}</span>
                   ) : null}
                 </label>
 

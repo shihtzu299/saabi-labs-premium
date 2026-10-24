@@ -10,11 +10,10 @@ const quickLinks = [
 ];
 
 const services = [
-  "Website Development",
-  "Web3 Development",
-  "Smart Contracts",
-  "AI Integrations",
-  "SaaS Applications"
+  { title: "Website Development", href: "/services/website-development" },
+  { title: "Full-Stack Applications & SaaS", href: "/services/software-saas" },
+  { title: "AI Integrations & Automation", href: "/services/ai-automation" },
+  { title: "Web3 & Smart Contracts", href: "/services/web3-smart-contracts" }
 ];
 
 function WhatsAppIcon() {
@@ -46,18 +45,18 @@ export default function Footer() {
     <footer className="border-t border-white/10 px-6 py-14">
       <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.1fr_0.8fr_0.8fr_0.9fr]">
         <div>
-          <Link href="/" className="text-2xl font-black">Saabi Labs</Link>
+          <Link href="/" className="text-2xl font-black">Domani Consult</Link>
           <p className="mt-5 max-w-sm leading-7 text-gray-400">
-            Premium Web3, AI, SaaS and automation engineering for startups and ambitious digital teams.
+            Technology and digital solutions for businesses, from websites and software to AI automation and Web3 products.
           </p>
           <div className="mt-6 flex gap-3">
-            <a href="https://wa.me/2348140668254" aria-label="Contact Saabi Labs on WhatsApp" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
+            <a href="https://wa.me/2348140668254" aria-label="Contact Domani Consult on WhatsApp" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
               <WhatsAppIcon />
             </a>
-            <a href="https://t.me/bnbjing" aria-label="Contact Saabi Labs on Telegram" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
+            <a href="https://t.me/bnbjing" aria-label="Contact Domani Consult on Telegram" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
               <TelegramIcon />
             </a>
-            <a href="https://x.com/ares19bc_" aria-label="Visit Saabi Labs on X" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
+            <a href="https://x.com/ares19bc_" aria-label="Visit Domani Consult on X" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
               <XIcon />
             </a>
           </div>
@@ -78,7 +77,9 @@ export default function Footer() {
           <h2 className="mb-5 text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">Services</h2>
           <div className="space-y-3">
             {services.map((service) => (
-              <p key={service} className="text-sm text-gray-400">{service}</p>
+              <Link key={service.href} href={service.href} className="block text-sm text-gray-400 transition hover:text-blue-300 focus-visible:rounded focus-visible:outline">
+                {service.title}
+              </Link>
             ))}
           </div>
         </div>
@@ -103,8 +104,8 @@ export default function Footer() {
       </div>
 
       <div className="mx-auto mt-12 flex max-w-7xl flex-col gap-3 border-t border-white/10 pt-6 text-sm text-gray-400 md:flex-row md:items-center md:justify-between">
-        <p>Copyright {new Date().getFullYear()} Saabi Labs. All rights reserved.</p>
-        <p>Built for premium product launches.</p>
+        <p>Copyright {new Date().getFullYear()} Domani Consult Nig Limited. All rights reserved.</p>
+        <p>Building digital solutions for ambitious businesses.</p>
       </div>
     </footer>
   );

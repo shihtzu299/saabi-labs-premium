@@ -10,7 +10,7 @@ function getSupabaseConfig(admin = false) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = admin
     ? process.env.SUPABASE_SERVICE_ROLE_KEY
-    : process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
     return null;
@@ -34,26 +34,52 @@ async function supabaseRequest<T>(
     return null;
   }
 
-  const response = await fetch(`${config.restUrl}/${table}${query}`, {
-    ...init,
-    cache: init.method ? undefined : "no-store",
-    headers: {
-      apikey: config.key,
-      Authorization: `Bearer ${config.key}`,
-      "Content-Type": "application/json",
-      ...init.headers
-    }
-  });
+  try {
+    const response = await fetch(`${config.restUrl}/${table}${query}`, {
+      ...init,
+      cache: init.method ? undefined : "no-store",
+      headers: {
+        apikey: config.key,
+        Authorization: `Bearer ${config.key}`,
+        "Content-Type": "application/json",
+        ...init.headers
+      }
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      let errorCode: string | undefined;
+      try {
+        const errorBody = (await response.json()) as { code?: unknown };
+        if (typeof errorBody.code === "string") {
+          errorCode = errorBody.code;
+        }
+      } catch {
+        // Keep the response body out of logs; the status and table identify the failure safely.
+      }
+      console.error("[Supabase request failed]", {
+        table,
+        status: response.status,
+        code: errorCode,
+      });
+      return null;
+    }
+
+    const prefer = new Headers(init.headers).get("Prefer") || "";
+    if (
+      response.status === 204 ||
+      prefer.split(",").some((value) => value.trim().toLowerCase() === "return=minimal")
+    ) {
+      return true as T;
+    }
+
+    return (await response.json()) as T;
+  } catch (error) {
+    console.error("[Supabase request error]", {
+      table,
+      errorType: error instanceof Error ? error.name : "UnknownError",
+    });
     return null;
   }
-
-  if (response.status === 204) {
-    return true as T;
-  }
-
-  return response.json() as Promise<T>;
 }
 
 function cleanStringArray(value: unknown) {
@@ -98,25 +124,27 @@ function normalizeTestimonial(testimonial: Testimonial): Testimonial {
   };
 }
 
-export async function getProjects() {
-  const projects = await supabaseRequest<Project[]>("projects", "?select=*&order=created_at.desc");
+export async function getProjects(admin = false) {
+  const projects = await supabaseRequest<Project[]>("projects", "?select=*&order=created_at.desc", {}, admin);
   return projects?.map(normalizeProject) || fallbackProjects;
 }
 
-export async function getProject(slug: string) {
+export async function getProject(slug: string, admin = false) {
   const projects = await supabaseRequest<Project[]>(
     "projects",
-    `?select=*&slug=eq.${encodeURIComponent(slug)}&limit=1`
+    `?select=*&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    {},
+    admin
   );
   return projects?.[0] ? normalizeProject(projects[0]) : fallbackProjects.find((project) => project.slug === slug);
 }
 
-export async function getPosts() {
-  const posts = await supabaseRequest<Post[]>("posts", "?select=*&order=date.desc");
+export async function getPosts(admin = false) {
+  const posts = await supabaseRequest<Post[]>("posts", "?select=*&order=date.desc", {}, admin);
   return posts?.map(normalizePost) || fallbackPosts;
 }
 
-export async function getTestimonials(status?: "pending" | "approved") {
+export async function getTestimonials(status?: "pending" | "approved", admin = false) {
   const query = status
     ? `?select=*&status=eq.${status}&order=created_at.desc`
     : "?select=*&order=created_at.desc";
@@ -124,9 +152,21 @@ export async function getTestimonials(status?: "pending" | "approved") {
   const testimonials = await supabaseRequest<Testimonial[]>(
     "testimonials",
     query,
+    {},
+    admin
   );
 
-  return testimonials?.map(normalizeTestimonial) || fallbackTestimonials;
+  if (testimonials === null) {
+    return admin ? [] : fallbackTestimonials;
+  }
+
+  if (testimonials.length === 0 && !admin && status === "approved") {
+    return fallbackTestimonials
+      .filter((testimonial) => testimonial.status === "approved")
+      .map(normalizeTestimonial);
+  }
+
+  return testimonials.map(normalizeTestimonial);
 }
 
 export async function updateTestimonial(
@@ -161,19 +201,19 @@ export async function deleteTestimonial(id: string) {
   );
 }
 
-export async function getPost(slug: string) {
+export async function getPost(slug: string, admin = false) {
   const posts = await supabaseRequest<Post[]>(
     "posts",
-    `?select=*&slug=eq.${encodeURIComponent(slug)}&limit=1`
+    `?select=*&slug=eq.${encodeURIComponent(slug)}&limit=1`,
+    {},
+    admin
   );
   return posts?.[0] ? normalizePost(posts[0]) : fallbackPosts.find((post) => post.slug === slug);
 }
 
 export function isAdminRequest(request: Request) {
-  const password = process.env.ADMIN_PASSWORD;
-  const suppliedPassword = request.headers.get("x-admin-password");
   const sessionToken = getCookieValue(request.headers.get("cookie"), adminCookieName);
-  return verifyAdminToken(sessionToken) || Boolean(password && suppliedPassword && password === suppliedPassword);
+  return verifyAdminToken(sessionToken);
 }
 
 export async function upsertProject(project: Project) {
@@ -220,20 +260,22 @@ export async function upsertPost(post: Post) {
   );
 }
 
+
 export async function upsertTestimonial(testimonial: Testimonial) {
-  return supabaseRequest<Testimonial[]>(
+  return supabaseRequest<boolean>(
     "testimonials",
     "",
     {
       method: "POST",
       headers: {
-        Prefer: "return=representation",
+        // The pending row is intentionally hidden by the public SELECT policy.
+        Prefer: "return=minimal",
       },
       body: JSON.stringify(testimonial),
     },
-    true,
   );
 }
+
 
 export async function deletePost(slug: string) {
   return supabaseRequest<boolean>(

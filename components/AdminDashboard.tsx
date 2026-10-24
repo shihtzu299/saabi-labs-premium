@@ -32,8 +32,8 @@ const emptyProject: Project = {
   year: new Date().getFullYear().toString(),
   outcome: "",
   imageUrl: "",
-liveUrl: "",
-metrics: []
+  liveUrl: "",
+  metrics: [],
 };
 
 const emptyPost: Post = {
@@ -43,7 +43,7 @@ const emptyPost: Post = {
   date: new Date().toISOString().slice(0, 10),
   readTime: "3 min read",
   category: "",
-  content: []
+  content: [],
 };
 
 function testimonialAvatar(testimonial: Testimonial) {
@@ -56,11 +56,17 @@ function testimonialAvatar(testimonial: Testimonial) {
 }
 
 function csvToArray(value: string) {
-  return value.split(",").map((item) => item.trim()).filter(Boolean);
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function linesToArray(value: string) {
-  return value.split("\n").map((item) => item.trim()).filter(Boolean);
+  return value
+    .split("\n")
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 function arrayToCsv(value: string[]) {
@@ -73,7 +79,9 @@ export default function AdminDashboard({
   initialTestimonials,
 }: AdminDashboardProps) {
   const router = useRouter();
-  const [status, setStatus] = useState("Signed in. Changes will be saved to Supabase.");
+  const [status, setStatus] = useState(
+    "Signed in. Changes will be saved to Supabase.",
+  );
   const [uploadingProjectImage, setUploadingProjectImage] = useState(false);
   const [projects, setProjects] = useState(initialProjects);
   const [posts, setPosts] = useState(initialPosts);
@@ -87,18 +95,21 @@ export default function AdminDashboard({
   });
   const [postForm, setPostForm] = useState({
     ...emptyPost,
-    content: emptyPost.content.join("\n\n")
+    content: emptyPost.content.join("\n\n"),
   });
 
-  const stats = useMemo(() => [
-    { label: "Projects", value: projects.length, icon: FolderKanban },
-    { label: "Blog posts", value: posts.length, icon: FileText },
-    {
-      label: "New testimonials",
-      value: testimonials.filter((item) => item.status !== "approved").length,
-      icon: MessageSquare,
-    },
-  ], [posts.length, projects.length, testimonials]);
+  const stats = useMemo(
+    () => [
+      { label: "Projects", value: projects.length, icon: FolderKanban },
+      { label: "Blog posts", value: posts.length, icon: FileText },
+      {
+        label: "Testimonials",
+        value: testimonials.length,
+        icon: MessageSquare,
+      },
+    ],
+    [posts.length, projects.length, testimonials],
+  );
 
   const saveProject = async () => {
     let metrics: Project["metrics"] = [];
@@ -128,9 +139,9 @@ export default function AdminDashboard({
     const response = await fetch("/api/admin/projects", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     const data = await response.json();
 
@@ -139,7 +150,10 @@ export default function AdminDashboard({
       return;
     }
 
-    setProjects((current) => [payload, ...current.filter((project) => project.slug !== payload.slug)]);
+    setProjects((current) => [
+      payload,
+      ...current.filter((project) => project.slug !== payload.slug),
+    ]);
     setProjectForm({
       ...emptyProject,
       stack: "",
@@ -162,7 +176,7 @@ export default function AdminDashboard({
 
     const response = await fetch("/api/admin/upload", {
       method: "POST",
-      body: formData
+      body: formData,
     });
     const data = await response.json();
 
@@ -175,7 +189,7 @@ export default function AdminDashboard({
 
     setProjectForm((current) => ({
       ...current,
-      imageUrl: data.publicUrl
+      imageUrl: data.publicUrl,
     }));
     setStatus("Image uploaded. Save the project to keep this image URL.");
   };
@@ -188,15 +202,15 @@ export default function AdminDashboard({
       date: postForm.date.trim(),
       readTime: postForm.readTime.trim(),
       category: postForm.category.trim(),
-      content: linesToArray(postForm.content)
+      content: linesToArray(postForm.content),
     };
 
     const response = await fetch("/api/admin/posts", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
     const data = await response.json();
 
@@ -205,17 +219,20 @@ export default function AdminDashboard({
       return;
     }
 
-    setPosts((current) => [payload, ...current.filter((post) => post.slug !== payload.slug)]);
+    setPosts((current) => [
+      payload,
+      ...current.filter((post) => post.slug !== payload.slug),
+    ]);
     setPostForm({
       ...emptyPost,
-      content: ""
+      content: "",
     });
     setStatus(`Saved post: ${payload.title}`);
   };
 
   const deleteItem = async (kind: "projects" | "posts", slug: string) => {
     const response = await fetch(`/api/admin/${kind}/${slug}`, {
-      method: "DELETE"
+      method: "DELETE",
     });
     const data = await response.json();
 
@@ -225,7 +242,9 @@ export default function AdminDashboard({
     }
 
     if (kind === "projects") {
-      setProjects((current) => current.filter((project) => project.slug !== slug));
+      setProjects((current) =>
+        current.filter((project) => project.slug !== slug),
+      );
     } else {
       setPosts((current) => current.filter((post) => post.slug !== slug));
     }
@@ -233,49 +252,56 @@ export default function AdminDashboard({
     setStatus(`Deleted ${slug}.`);
   };
 
-const approveTestimonial = async (id?: string) => {
-  if (!id) return;
+  const approveTestimonial = async (id?: string) => {
+    if (!id) return;
 
-  const response = await fetch(`/api/admin/testimonials/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      status: "approved",
-    }),
-  });
+    try {
+      const response = await fetch(`/api/admin/testimonials/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: "approved",
+          approved: true,
+        }),
+      });
 
-  if (!response.ok) {
-    setStatus("Failed to approve testimonial.");
-    return;
-  }
+      const data = await response.json();
 
-  setTestimonials((current) =>
-    current.map((item) =>
-      item.id === id ? { ...item, status: "approved" } : item,
-    ),
-  );
+      if (!response.ok || !data.testimonial) {
+        setStatus(data.error || "Failed to approve testimonial.");
+        return;
+      }
 
-  setStatus("Testimonial approved.");
-};
+      setTestimonials((current) =>
+        current.map((item) =>
+          item.id === id ? { ...item, ...data.testimonial } : item,
+        ),
+      );
 
-const removeTestimonial = async (id?: string) => {
-  if (!id) return;
+      setStatus("Testimonial approved.");
+    } catch {
+      setStatus("Failed to approve testimonial. Please check your connection.");
+    }
+  };
 
-  const response = await fetch(`/api/admin/testimonials/${id}`, {
-    method: "DELETE",
-  });
+  const removeTestimonial = async (id?: string) => {
+    if (!id) return;
 
-  if (!response.ok) {
-    setStatus("Failed to delete testimonial.");
-    return;
-  }
+    const response = await fetch(`/api/admin/testimonials/${id}`, {
+      method: "DELETE",
+    });
 
-  setTestimonials((current) => current.filter((item) => item.id !== id));
+    if (!response.ok) {
+      setStatus("Failed to delete testimonial.");
+      return;
+    }
 
-  setStatus("Testimonial deleted.");
-};
+    setTestimonials((current) => current.filter((item) => item.id !== id));
+
+    setStatus("Testimonial deleted.");
+  };
 
   const logout = async () => {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -603,7 +629,6 @@ const removeTestimonial = async (id?: string) => {
             ))}
           </div>
         </div>
-
       </section>
 
       <section className="mt-8">
@@ -637,7 +662,9 @@ const removeTestimonial = async (id?: string) => {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <div className="truncate font-semibold">{testimonial.name}</div>
+                        <div className="truncate font-semibold">
+                          {testimonial.name}
+                        </div>
 
                         <div className="truncate text-sm text-gray-400">
                           {testimonial.company}
@@ -654,7 +681,6 @@ const removeTestimonial = async (id?: string) => {
                         {testimonial.status}
                       </span>
                     </div>
-
                   </div>
                 </div>
 
