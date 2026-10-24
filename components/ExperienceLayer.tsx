@@ -58,8 +58,22 @@ function CustomCursor() {
       gsap.to(ringRef.current, { x: event.clientX, y: event.clientY, duration: 0.35 });
     };
 
-    window.addEventListener("pointermove", move);
-    return () => window.removeEventListener("pointermove", move);
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
+    const syncListener = () => {
+      if (mobileQuery.matches) {
+        window.removeEventListener("pointermove", move);
+      } else {
+        window.addEventListener("pointermove", move);
+      }
+    };
+
+    syncListener();
+    mobileQuery.addEventListener("change", syncListener);
+
+    return () => {
+      mobileQuery.removeEventListener("change", syncListener);
+      window.removeEventListener("pointermove", move);
+    };
   }, []);
 
   return (
@@ -97,8 +111,22 @@ function Spotlight() {
       ref.current?.style.setProperty("--spotlight-y", `${event.clientY}px`);
     };
 
-    window.addEventListener("pointermove", move);
-    return () => window.removeEventListener("pointermove", move);
+    const mobileQuery = window.matchMedia("(max-width: 768px)");
+    const syncListener = () => {
+      if (mobileQuery.matches) {
+        window.removeEventListener("pointermove", move);
+      } else {
+        window.addEventListener("pointermove", move);
+      }
+    };
+
+    syncListener();
+    mobileQuery.addEventListener("change", syncListener);
+
+    return () => {
+      mobileQuery.removeEventListener("change", syncListener);
+      window.removeEventListener("pointermove", move);
+    };
   }, []);
 
   return <div ref={ref} className="spotlight pointer-events-none fixed inset-0 z-[1]" />;

@@ -180,6 +180,13 @@ body {
   .particle {
     display: none;
   }
+
+  .glass,
+  .domani-nav,
+  .mobile-panel {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 .hero-visual {
