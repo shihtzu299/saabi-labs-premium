@@ -53,10 +53,10 @@ export default function Footer() {
             <a href="https://wa.me/2348140668254" aria-label="Contact Domani Consult on WhatsApp" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
               <WhatsAppIcon />
             </a>
-            <a href="https://t.me/bnbjing" aria-label="Contact Domani Consult on Telegram" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
+            <a href="https://t.me/domaniconsult" aria-label="Contact Domani Consult on Telegram" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
               <TelegramIcon />
             </a>
-            <a href="https://x.com/ares19bc_" aria-label="Visit Domani Consult on X" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
+            <a href="https://x.com/domaniconsult" aria-label="Visit Domani Consult on X" className="grid h-11 w-11 place-items-center rounded-full border border-white/10 text-blue-300 transition hover:border-blue-300/60">
               <XIcon />
             </a>
           </div>

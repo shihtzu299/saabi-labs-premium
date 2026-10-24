@@ -44,7 +44,7 @@ export default function Contact() {
             </a>
 
             <a
-              href="https://t.me/bnbjing"
+              href="https://t.me/domaniconsult"
               aria-label="Contact Domani Consult on Telegram"
               className="glass flex items-center justify-between gap-6 p-8 rounded-3xl transition hover:border-blue-400/40"
             >
@@ -55,7 +55,7 @@ export default function Contact() {
             </a>
 
             <a
-              href="https://x.com/ares19bc_"
+              href="https://x.com/domaniconsult"
               aria-label="Visit Domani Consult on X"
               className="glass flex items-center justify-between gap-6 p-8 rounded-3xl transition hover:border-blue-400/40"
             >
