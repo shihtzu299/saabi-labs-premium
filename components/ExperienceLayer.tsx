@@ -218,7 +218,7 @@ function Chatbot() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {open ? (
-        <div className="glass w-[min(360px,calc(100vw-48px))] overflow-hidden rounded-3xl shadow-2xl">
+        <div className="chatbot-panel glass w-[min(360px,calc(100vw-48px))] overflow-hidden rounded-3xl shadow-2xl">
           <div className="flex items-center justify-between border-b border-white/10 p-4">
             <div className="flex items-center gap-2 font-semibold">
               <Bot size={18} />
